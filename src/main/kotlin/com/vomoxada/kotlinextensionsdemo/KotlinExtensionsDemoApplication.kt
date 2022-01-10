@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.data.r2dbc.core.R2dbcEntityOperations
 import org.springframework.data.relational.core.mapping.Table
+import org.springframework.r2dbc.core.DatabaseClient
 import org.springframework.stereotype.Repository
 
 @SpringBootApplication
@@ -36,11 +37,15 @@ class CustomerRepository(
 
 		r2dbcEntityTemplate.databaseClient
 			.sql(query)
-			.apply { customer.email?.let { bind("email", customer.email) } ?: bindNull("email", String::class.java) }
-			.apply { customer.phoneNumber?.let { bind("phoneNumber", customer.phoneNumber) } ?: bindNull("phoneNumber", String::class.java) }
-			.apply { customer.firstName?.let { bind("firstName", customer.firstName) } ?: bindNull("firstName", String::class.java) }
-			.apply { customer.lastName?.let { bind("lastName", customer.lastName) } ?: bindNull("lastName", String::class.java) }
+			.bind("email", customer.email)
+			.bind("phoneNumber", customer.email)
+			.bind("firstName", customer.email)
+			.bind("lastName", customer.email)
 			.then()
 			.awaitFirstOrNull()
 	}
+}
+
+inline fun <reified T> DatabaseClient.GenericExecuteSpec.bind(name: String, value: T?): DatabaseClient.GenericExecuteSpec {
+	return value?.let { bind(name, it) } ?: bindNull(name, T::class.java)
 }
