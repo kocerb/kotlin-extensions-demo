@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.data.r2dbc.core.R2dbcEntityOperations
 import org.springframework.data.relational.core.mapping.Table
-import org.springframework.r2dbc.core.DatabaseClient
+import org.springframework.r2dbc.core.bind
 import org.springframework.stereotype.Repository
 
 @SpringBootApplication
@@ -44,8 +44,4 @@ class CustomerRepository(
 			.then()
 			.awaitFirstOrNull()
 	}
-}
-
-inline fun <reified T> DatabaseClient.GenericExecuteSpec.bind(name: String, value: T?): DatabaseClient.GenericExecuteSpec {
-	return value?.let { bind(name, it) } ?: bindNull(name, T::class.java)
 }
