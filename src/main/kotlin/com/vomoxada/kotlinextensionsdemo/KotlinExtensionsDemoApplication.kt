@@ -36,29 +36,10 @@ class CustomerRepository(
 
 		var executeSpec = r2dbcEntityTemplate.databaseClient.sql(query)
 
-		if (customer.email != null) {
-			executeSpec = executeSpec.bind("email", customer.email)
-		} else {
-			executeSpec = executeSpec.bindNull("email", String::class.java)
-		}
-
-		if (customer.phoneNumber != null) {
-			executeSpec = executeSpec.bind("phoneNumber", customer.phoneNumber)
-		} else {
-			executeSpec = executeSpec.bindNull("phoneNumber", String::class.java)
-		}
-
-		if (customer.firstName != null) {
-			executeSpec = executeSpec.bind("firstName", customer.firstName)
-		} else {
-			executeSpec = executeSpec.bindNull("firstName", String::class.java)
-		}
-
-		if (customer.lastName != null) {
-			executeSpec = executeSpec.bind("lastName", customer.lastName)
-		} else {
-			executeSpec = executeSpec.bindNull("lastName", String::class.java)
-		}
+		executeSpec = customer.email?.let { executeSpec.bind("email", customer.email) } ?: executeSpec.bindNull("email", String::class.java)
+		executeSpec = customer.phoneNumber?.let { executeSpec.bind("phoneNumber", customer.phoneNumber) } ?: executeSpec.bindNull("phoneNumber", String::class.java)
+		executeSpec = customer.firstName?.let { executeSpec.bind("firstName", customer.firstName) } ?: executeSpec.bindNull("firstName", String::class.java)
+		executeSpec = customer.lastName?.let { executeSpec.bind("lastName", customer.lastName) } ?: executeSpec.bindNull("lastName", String::class.java)
 
 		executeSpec.then().awaitFirstOrNull()
 	}
